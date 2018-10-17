@@ -10,11 +10,6 @@ const getBgImg = require('./methods/getBgImg')
 const getImg = require('./methods/getImg')
 const getJs = require('./methods/getJs')
 
-let obj = {
-  'domain': 'http://www.gardenbee.com.cn',
-  'resDir': 'template/pc/jialemi/static',
-}
-
 class Zspider {
   constructor(paramsObject) {
     this.paramsObject = paramsObject
@@ -42,7 +37,3 @@ class Zspider {
     getJs(`${__dirname}\\${this.name}\\js`, domain, resDir, $('script'))
   }
 }
-
-
-let a = new Zspider(obj)
-a.run()
