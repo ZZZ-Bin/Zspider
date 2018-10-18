@@ -13,6 +13,7 @@ module.exports = function (pathName, domain, resDir, javascripts) {
         if (!err && res.statusCode === 200) {
           fs.writeFileSync(`${pathName}/${jsName}`, data)
         }
+        console.log('\x1B[33m%s\x1b[0m', `getting ${jsName}`);
       })
     } else if (javascripts.length > 1) {
       for (let i in javascripts) {
@@ -25,7 +26,7 @@ module.exports = function (pathName, domain, resDir, javascripts) {
           // 避免同文件重复请求
           if (jsFiles.indexOf(jsName) !== -1) continue
           request(jsSrc, (err, res, data) => {
-            console.log(`getting ${jsName}`);
+            console.log('\x1B[33m%s\x1b[0m', `getting ${jsName}`);
             if (!err && res.statusCode === 200) {
               fs.writeFileSync(`${pathName}/${jsName}`, data)
             }

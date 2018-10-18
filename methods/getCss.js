@@ -15,6 +15,7 @@ module.exports = function getCss(pathName, domain, resDir, links) {
             fs.writeFileSync(`${pathName}/${cssName}`, data, () => {
               resolve()
             })
+            console.log('\x1B[31m%s\x1b[39m', `getting ${cssName}`);
           }
         })
       } else if (links.length > 1) {
@@ -29,7 +30,7 @@ module.exports = function getCss(pathName, domain, resDir, links) {
             // 避免同文件重复请求
             if (cssFiles.indexOf(cssName) !== -1) continue
             request(linkHref, (err, res, data) => {
-              console.log(`getting ${cssName}`);
+              console.log('\x1B[31m%s\x1b[39m', `getting ${cssName}`);
               if (!err && res.statusCode === 200) {
                 fs.writeFile(`${pathName}/${cssName}`, data, () => {
                   count++
@@ -38,7 +39,8 @@ module.exports = function getCss(pathName, domain, resDir, links) {
               }
             })
           }
-        }         
+        }
+        // resolve()
       }
     })
   })

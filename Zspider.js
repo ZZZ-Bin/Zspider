@@ -1,7 +1,5 @@
-const request = require('request');
 const fs = require('fs')
 const cheerio = require('cheerio')
-const path = require('path')
 
 const createProgram = require('./methods/createProgram')
 const getHtml = require('./methods/getHtml')
@@ -9,11 +7,25 @@ const getCss = require('./methods/getCss')
 const getBgImg = require('./methods/getBgImg')
 const getImg = require('./methods/getImg')
 const getJs = require('./methods/getJs')
+const getOther = require('./methods/getOther')
 
-class Zspider {
+module.exports = class Zspider {
   constructor(paramsObject) {
     this.paramsObject = paramsObject
     this.name = process.argv[2] || paramsObject.domain.split('.')[1]
+  }
+
+ /**
+ * @param {Object} paramsObject
+ * @param {string} paramsObject.domain - 域名
+ * @param {string} paramsObject.htmlName - 生成的 html 文件名
+ * @param {string} paramsObject.resDir - 资源路径
+ * @param {string} paramsObject.otherPage - 分页
+ */
+
+  static run(paramsObject) {
+    const instance = new Zspider(paramsObject)
+    instance.run()
   }
 
   async run() {
@@ -21,19 +33,22 @@ class Zspider {
     htmlName = htmlName || 'index.html'
     otherPage = otherPage || ''
 
-    createProgram(__dirname, this.name)
+    createProgram('./', this.name)
 
-    await getHtml(`${domain}/${otherPage}`, `${__dirname}/${this.name}/${htmlName}`)
+    await getHtml(`${domain}/${otherPage}`, `./${this.name}/${htmlName}`)
 
-    const body = (fs.readFileSync(`${__dirname}/${this.name}/${htmlName}`).toString())
+    const body = (fs.readFileSync(`./${this.name}/${htmlName}`).toString())
     const $ = cheerio.load(body)
 
-    await getCss(`${__dirname}\\${this.name}\\css`, domain, resDir, $('link'))
+    await getCss(`.\\${this.name}\\css`, domain, resDir, $('link'))
 
-    getBgImg(`${__dirname}\\${this.name}\\css`, `${__dirname}\\${this.name}\\img`, domain, resDir)
+    getBgImg(`.\\${this.name}\\css`, `.\\${this.name}\\img`, domain, resDir)
 
-    getImg(`${__dirname}\\${this.name}\\img`, domain, resDir, $('body img'))
+    getImg(`.\\${this.name}\\img`, domain, resDir, $('body img'))
 
-    getJs(`${__dirname}\\${this.name}\\js`, domain, resDir, $('script'))
+    // getJs(`.\\${this.name}\\js`, domain, resDir, $('script'))
+
+    // let othersSet = getOther(`${this.name}/${htmlName}`, $('a'))
+    
   }
 }

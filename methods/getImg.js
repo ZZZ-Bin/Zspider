@@ -2,12 +2,20 @@ const fs = require('fs')
 const path = require('path')
 const request = require('request')
 
+const progressBar = require('./progressBar')
+
 module.exports = function (pathName, domain, resDir, imgs) {
   fs.readdir(pathName, (err, imgFiles) => {
     if (err) throw err
+    // 初始化任务总数
+    let totalNum = 0
+    // 初始化任务完成数
+    let completedNum = 0
+
     if (imgs.length === 1) {
       let imgSrc = `${domain}${imgs.attr('src')}`
       let imgName = path.basename(imgs.attr('src'))
+      console.log('\x1B[34m%s\x1b[39m', `getting ${imgName}`)
       request(imgSrc).pipe(fs.createWriteStream(`${pathName}/${imgName}`))
     } else if (imgs.length > 1) {
       for (let i in imgs) {
@@ -19,8 +27,11 @@ module.exports = function (pathName, domain, resDir, imgs) {
           let imgName = path.basename(imgs[i].attribs.src)
           // 避免同文件重复请求
           if (imgFiles.indexOf(imgName) !== -1) continue
-          console.log(`getting ${imgName}`);
-          request(imgSrc).pipe(fs.createWriteStream(`${pathName}/${imgName}`))
+          totalNum++
+          request(imgSrc).pipe(fs.createWriteStream(`${pathName}/${imgName}`).on('close', () => {
+            completedNum++
+            progressBar(totalNum, completedNum, 'img', 25, imgName)
+          }))
         }
       }
     }
