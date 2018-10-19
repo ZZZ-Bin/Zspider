@@ -1,6 +1,4 @@
-const log = require('single-line-log').stdout
-
-module.exports = function progressBar(totalNum, completedNum, description='Progress', bar_length=25, info) {
+module.exports = function (totalNum, completedNum, description='Progress', bar_length=25, info) {
  
  // 刷新进度条图案、文字的方法
   let percent = (completedNum / totalNum).toFixed(4);  // 计算进度(子任务的 完成数 除以 总数)
@@ -17,12 +15,11 @@ module.exports = function progressBar(totalNum, completedNum, description='Progr
   for (let i=0;i<bar_length-cell_num;i++) {
    empty += '░';
   }
- 
+  // ${cell}${empty} ${(100*percent).toFixed(2)}%
   // 拼接最终文本
-  let text = `+ ${description}: \x1B[33m${info}\x1b[0m —————— ${completedNum}/${totalNum}\n${cell}${empty} ${(100*percent).toFixed(2)}%`
-   
+  let text = `+ ${description}: \x1B[33m${info}\x1b[0m —————— ${completedNum}/${totalNum}\n`;
+ 
   // 在单行输出文本
-  log(text);
+  return text
   // console.log(` +${description}: `,'\x1B[34m%s\x1b[39m', `${info}`)
-  return log.clear
 }

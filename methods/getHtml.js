@@ -1,7 +1,7 @@
 const fs = require('fs')
 const request = require('request')
 
-module.exports = async function getHtml(urlName, path) {
+module.exports = async function (urlName, path) {
   return new Promise((resolve, reject) => {
     request(urlName, function (err, res, data) {
       if (err) throw err

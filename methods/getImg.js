@@ -2,9 +2,9 @@ const fs = require('fs')
 const path = require('path')
 const request = require('request')
 
-const progressBar = require('./progressBar')
+const progressBarText = require('./progressBarText')
 
-module.exports = function (pathName, domain, resDir, imgs) {
+module.exports = function (pathName, domain, resDir, imgs, changeLog) {
   fs.readdir(pathName, (err, imgFiles) => {
     if (err) throw err
     // 初始化任务总数
@@ -30,7 +30,8 @@ module.exports = function (pathName, domain, resDir, imgs) {
           totalNum++
           request(imgSrc).pipe(fs.createWriteStream(`${pathName}/${imgName}`).on('close', () => {
             completedNum++
-            progressBar(totalNum, completedNum, 'img', 25, imgName)
+            let text = progressBarText(totalNum, completedNum, 'img', 25, imgName)
+            changeLog('','',text)
           }))
         }
       }
